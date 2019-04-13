@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -64,6 +65,7 @@ public class start extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE); //no title bar
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.start);
 
@@ -96,7 +98,12 @@ public class start extends AppCompatActivity {
                 int alltime = (int) millisUntilFinished/1000;
                 int minute = alltime / 60;
                 int second = alltime % 60;
-                mTextView.setText(minute +":" + second);
+                if (second<10){
+                    mTextView.setText(minute +":0" + second);
+                }else{
+                    mTextView.setText(minute +":" + second);
+                }
+
             }
             @Override
             public void onFinish() {
@@ -164,12 +171,32 @@ public class start extends AppCompatActivity {
 
         BluetoothDevice device = bluetoothAdapter.getDefaultAdapter().getRemoteDevice("8C:DE:52:44:A7:40");
         MY_UUID = device.getUuids()[0].getUuid();
-
-
+        osValue = (TextView) findViewById(R.id.textView7);
+        osValue.setText("尚未連接腦波設備0");
         connectThread = new ConnectThread(device);
         connectThread.run();
         ReadData rd = new ReadData();
-        rd.start();
+        try {
+            rd.sleep(3000);
+        } catch (InterruptedException e) {
+            osValue.setText("尚未連接腦波設備1");
+            return;
+        }
+        if (tmpIn!=null){
+            rd.start();
+        }else{
+            osValue.setText("尚未連接腦波設備2");
+        }
+
+//        if (tmpIn!=null){
+//            try{
+//                }catch (Exception e){
+//            }
+//        }else {
+//            osValue.setText("尚未連接腦波設備");
+//        }
+
+
     }
 
     @Override
@@ -224,7 +251,8 @@ public class start extends AppCompatActivity {
                         need = false;
                     }
                 }} catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                return;
             }
         }
     }
@@ -255,13 +283,13 @@ public class start extends AppCompatActivity {
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
     }
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            Toast.makeText(getApplicationContext(), String.valueOf(msg.obj),
-                    Toast.LENGTH_LONG).show();
-            super.handleMessage(msg);
-        }
-    };
+//    private Handler handler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            Toast.makeText(getApplicationContext(), String.valueOf(msg.obj),
+//                    Toast.LENGTH_LONG).show();
+//            super.handleMessage(msg);
+//        }
+//    };
 
 
 
