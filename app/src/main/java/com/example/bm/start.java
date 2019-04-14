@@ -59,7 +59,7 @@ public class start extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     VideoView videoView;
     CountDownTimer yourCountDownTimer;
-    //    CountDownTimer yourCountDownTimer2;
+    CountDownTimer yourCountDownTimer2;
     int reciprocal = 10000;
     int frequency = 2;
     @Override
@@ -89,7 +89,7 @@ public class start extends AppCompatActivity {
 
         Intent intent = this.getIntent();
         reciprocal = intent.getIntExtra("reciprocal", 10000); //總進行時數
-//        frequency = intent.getIntExtra("frequency", 2); //頻率
+        frequency = intent.getIntExtra("frequency", 0); //頻率
         yourCountDownTimer = new CountDownTimer(reciprocal, 1000) {
             TextView mTextView = (TextView) findViewById(R.id.textView);
             @Override
@@ -114,37 +114,40 @@ public class start extends AppCompatActivity {
                 mTextView.setText("Done!");
             }
         }.start();
-//        yourCountDownTimer2 = new CountDownTimer(reciprocal, (frequency-1)*1000) {
-//            int i = 0;
-//            int frequencyTime = 0;
-//            TextView myAwesomeTextView = (TextView)findViewById(R.id.textView7);
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                //倒數秒數中要做的事
-//                setVibrate(200); // 震動 0.2 秒
-//                i += 1;
-//                new CountDownTimer(frequency*1000, 1000) {
-//                    @Override
-//                    public void onTick(long millisUntilFinished) {
-//                        Log.v("Log_tag", "Tick of Progress" +(int)(frequency-(millisUntilFinished/1000))*(100/frequency) + "|||||" + millisUntilFinished);
-//                        if (i % 2 == 1) {
-//                            myAwesomeTextView.setText("吸氣" + ((millisUntilFinished / 1000)));
-//                        } else {
-//                            myAwesomeTextView.setText("吐吐氣" + ((millisUntilFinished / 1000)));
-//                        }
-//                    } @Override
-//                    public void onFinish() {
-//                        //倒數完成後要做的事
-//                    }
-//                }.start();
-//            }
-//            @Override
-//            public void onFinish() {
-//                //倒數完成後要做的事
-//                setVibrate(200); // 震動 0.2 秒
-//                myAwesomeTextView.setText("Done!");
-//            }
-//        }.start();
+        yourCountDownTimer2 = new CountDownTimer(reciprocal, (frequency-1)*1000) {
+            int i = 0;
+            int frequencyTime = 0;
+            TextView myAwesomeTextView = (TextView)findViewById(R.id.textView7);
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //倒數秒數中要做的事
+                setVibrate(200); // 震動 0.2 秒
+                i += 1;
+                new CountDownTimer(frequency*1000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        Log.v("Log_tag", "Tick of Progress" +(int)(frequency-(millisUntilFinished/1000))*(100/frequency) + "|||||" + millisUntilFinished);
+                        if (i % 2 == 1) {
+                            myAwesomeTextView.setText("吸氣" + ((millisUntilFinished / 1000)));
+                        } else {
+                            myAwesomeTextView.setText("吐吐氣" + ((millisUntilFinished / 1000)));
+                        }
+                    } @Override
+                    public void onFinish() {
+                        //倒數完成後要做的事
+                    }
+                }.start();
+            }
+            @Override
+            public void onFinish() {
+                //倒數完成後要做的事
+                setVibrate(200); // 震動 0.2 秒
+                myAwesomeTextView.setText("Done!");
+            }
+        };
+        if(frequency!=0){
+            yourCountDownTimer2.start();
+        }
 
 
 
