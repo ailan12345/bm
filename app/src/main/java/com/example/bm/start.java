@@ -47,6 +47,7 @@ public class start extends AppCompatActivity {
     /*private BluetoothAdapter bluetoothAdapter;*/
     private static final int REQUEST_ENABLE_BT = 2;
     private ConnectThread connectThread;
+    ReadData rd;
     BluetoothAdapter bluetoothAdapter;
     UUID MY_UUID;
     private OutputStream tmpOut ;//輸出流
@@ -178,9 +179,9 @@ public class start extends AppCompatActivity {
         osValue.setText("尚未連接腦波設備0");
         connectThread = new ConnectThread(device);
         connectThread.run();
-        ReadData rd = new ReadData();
+        rd = new ReadData();
         try {
-            rd.sleep(3000);
+            rd.sleep(500);
         } catch (InterruptedException e) {
             osValue.setText("尚未連接腦波設備1");
             return;
@@ -209,10 +210,12 @@ public class start extends AppCompatActivity {
         Toast.makeText(start.this,
                 "返回" , Toast.LENGTH_SHORT).show();
         yourCountDownTimer.cancel();
-//        yourCountDownTimer2.cancel();
+        yourCountDownTimer2.cancel();
         mediaPlayer.stop();
         mediaPlayer.release();
         videoView.stopPlayback();
+        connectThread.cancel();;
+        rd.interrupt();
     }
 
 
@@ -280,12 +283,12 @@ public class start extends AppCompatActivity {
         myVibrator.vibrate(time);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        // Don't forget to unregister the ACTION_FOUND receiver.
+//        unregisterReceiver(receiver);
+//    }
 //    private Handler handler = new Handler() {
 //        public void handleMessage(Message msg) {
 //            Toast.makeText(getApplicationContext(), String.valueOf(msg.obj),

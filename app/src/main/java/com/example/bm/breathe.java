@@ -31,7 +31,7 @@ public class breathe extends AppCompatActivity {
         int reciprocal = 10000; //時數
         switch(radioButton.getId()){
             case R.id.radioButton2:
-                reciprocal = 20000;
+                reciprocal = 60000;
                 break;
             case R.id.radioButton3:
                 reciprocal = 120000;
