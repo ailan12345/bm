@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Service;
@@ -55,6 +56,8 @@ public class start extends AppCompatActivity {
     TextView osValue;
     int attention = 0;
     int meditation = 0;
+    ProgressBar progressBarM;
+    ProgressBar progressBarA;
 
 
     MediaPlayer mediaPlayer;
@@ -63,6 +66,8 @@ public class start extends AppCompatActivity {
     CountDownTimer yourCountDownTimer2;
     int reciprocal = 10000;
     int frequency = 2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,10 +157,6 @@ public class start extends AppCompatActivity {
 
 
 
-
-
-
-
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // Register for broadcasts when a device is discovered.
 //        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -176,7 +177,7 @@ public class start extends AppCompatActivity {
         BluetoothDevice device = bluetoothAdapter.getDefaultAdapter().getRemoteDevice("8C:DE:52:44:A7:40");
         MY_UUID = device.getUuids()[0].getUuid();
         osValue = (TextView) findViewById(R.id.textView7);
-        osValue.setText("尚未連接腦波設備0");
+        osValue.setText("連接成功");
         connectThread = new ConnectThread(device);
         connectThread.run();
         rd = new ReadData();
@@ -191,6 +192,8 @@ public class start extends AppCompatActivity {
         }else{
             osValue.setText("尚未連接腦波設備2");
         }
+//        osValue = (TextView) findViewById(R.id.textView7);
+//        osValue.setText(attention+"||||"+meditation);
 
 //        if (tmpIn!=null){
 //            try{
@@ -245,8 +248,10 @@ public class start extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                osValue = (TextView) findViewById(R.id.textView7);
-                                osValue.setText(attention+"||||"+meditation);
+                                progressBarA = (ProgressBar) findViewById(R.id.progressBarA);
+                                progressBarM = (ProgressBar) findViewById(R.id.progressBarM);
+                                progressBarA.setProgress(attention);//專注
+                                progressBarM.setProgress(meditation);//放鬆
                             }
                         });
                         Log.e("TGAC", "attention and meditation: "+attention+"||||"+meditation);
