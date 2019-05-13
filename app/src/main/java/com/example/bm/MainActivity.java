@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    public void descriptionClick(View v) {
-//        Intent intent = new Intent();
-//        intent.setClass(MainActivity.this, description.class);
-//        startActivity(intent);
-//
-//    }
+    public void descriptionClick(View v) {
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, description.class);
+        startActivity(intent);
+
+    }
 
 
     public void breatheClick(View v) {
