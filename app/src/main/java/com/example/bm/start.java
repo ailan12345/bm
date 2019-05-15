@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -32,12 +34,17 @@ import android.widget.Toast;
 import android.app.Service;
 import android.widget.VideoView;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -252,6 +259,17 @@ public class start extends AppCompatActivity {
                                 progressBarM = (ProgressBar) findViewById(R.id.progressBarM);
                                 progressBarA.setProgress(attention);//專注
                                 progressBarM.setProgress(meditation);//放鬆
+                                WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                                WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+
+                                try {
+                                    URL url = new URL("https://ailan.herokuapp.com/bm/"+ wifiInfo.getMacAddress() + "/" + attention + "/" + meditation + "/" );
+                                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                                    urlConnection.connect();
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+
                             }
                         });
                         Log.e("TGAC", "attention and meditation: "+attention+"||||"+meditation);
