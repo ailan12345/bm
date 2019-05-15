@@ -2,52 +2,50 @@ package com.example.bm;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Service;
 import android.widget.VideoView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntityHC4;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class start extends AppCompatActivity {
@@ -228,6 +226,71 @@ public class start extends AppCompatActivity {
         rd.interrupt();
     }
 
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(String.format("%02X:",b));
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+        }
+        return "02:00:00:00:00:00";
+    }
+
+
+    public void InsertData(final String macAddr, final String attention, final String meditation){
+        class SendPostReqAsyncTask extends AsyncTask<String, Void, String>{
+            @Override
+            protected String doInBackground(String...params){
+                String macHolder = macAddr;
+                String attHolder = attention;
+                String medHolder = meditation;
+                List<NameValuePair> nameValuePAirs = new ArrayList<>();
+                nameValuePAirs.add(new BasicNameValuePair("macAddr", macHolder));
+                nameValuePAirs.add(new BasicNameValuePair("attention", attHolder));
+                nameValuePAirs.add(new BasicNameValuePair("meditation", medHolder));
+
+                try{
+                    HttpClient client = new DefaultHttpClient();
+                    HttpPost post = new HttpPost("https://ailan.herokuapp.com/bm/"+ macAddr + "/" + attention + "/" + meditation + "/");
+                    post.setEntity(new UrlEncodedFormEntity(nameValuePAirs));
+                    HttpResponse response = client.execute(post);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return "";
+            }
+//            @Override
+//            protected void onPostExecute(String result){
+//                super.onPostExecute(result);
+//                Toast.makeText()
+//            }
+        }
+        SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
+        sendPostReqAsyncTask.execute(macAddr, attention, meditation);
+    }
+
 
     public class ReadData extends Thread{
         int t =0;
@@ -261,14 +324,7 @@ public class start extends AppCompatActivity {
                                 progressBarM.setProgress(meditation);//放鬆
                                 WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
                                 WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
-
-                                try {
-                                    URL url = new URL("https://ailan.herokuapp.com/bm/"+ wifiInfo.getMacAddress() + "/" + attention + "/" + meditation + "/" );
-                                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                                    urlConnection.connect();
-                                } catch (Exception e) {
-                                    System.out.println(e.getMessage());
-                                }
+                                InsertData(getMacAddr(), Integer.toString(attention), Integer.toString(meditation));
 
                             }
                         });
