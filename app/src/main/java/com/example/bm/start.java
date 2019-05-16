@@ -219,7 +219,7 @@ public class start extends AppCompatActivity {
                 "返回" , Toast.LENGTH_SHORT).show();
         yourCountDownTimer.cancel();
         yourCountDownTimer2.cancel();
-        mediaPlayer.stop();
+//        mediaPlayer.stop();
         mediaPlayer.release();
         videoView.stopPlayback();
         connectThread.cancel();;
@@ -254,6 +254,7 @@ public class start extends AppCompatActivity {
 
 
     public void InsertData(final String macAddr, final String attention, final String meditation){
+        Log.e("TGAC", "attenti1111111111: ");
         class SendPostReqAsyncTask extends AsyncTask<String, Void, String>{
             @Override
             protected String doInBackground(String...params){
@@ -266,6 +267,7 @@ public class start extends AppCompatActivity {
                 nameValuePAirs.add(new BasicNameValuePair("meditation", medHolder));
 
                 try{
+                    Log.e("TGAC", "attention and meditation: "+attention+"||||"+meditation+"|||||||||||||"+macAddr);
                     HttpClient client = new DefaultHttpClient();
                     HttpPost post = new HttpPost("https://ailan.herokuapp.com/bm/"+ macAddr + "/" + attention + "/" + meditation + "/");
                     post.setEntity(new UrlEncodedFormEntity(nameValuePAirs));
@@ -322,8 +324,7 @@ public class start extends AppCompatActivity {
                                 progressBarM = (ProgressBar) findViewById(R.id.progressBarM);
                                 progressBarA.setProgress(attention);//專注
                                 progressBarM.setProgress(meditation);//放鬆
-                                WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-                                WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+
                                 InsertData(getMacAddr(), Integer.toString(attention), Integer.toString(meditation));
 
                             }
