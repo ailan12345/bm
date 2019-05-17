@@ -48,6 +48,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class start extends AppCompatActivity {
 
     /*private BluetoothAdapter bluetoothAdapter;*/
@@ -267,9 +273,9 @@ public class start extends AppCompatActivity {
                 nameValuePAirs.add(new BasicNameValuePair("meditation", medHolder));
 
                 try{
-                    Log.e("TGAC", "attention and meditation: "+attention+"||||"+meditation+"|||||||||||||"+macAddr);
                     HttpClient client = new DefaultHttpClient();
                     HttpPost post = new HttpPost("https://ailan.herokuapp.com/bm/"+ macAddr + "/" + attention + "/" + meditation + "/");
+                    Log.e("TGAC", ""+post);
                     post.setEntity(new UrlEncodedFormEntity(nameValuePAirs));
                     HttpResponse response = client.execute(post);
 
@@ -291,6 +297,25 @@ public class start extends AppCompatActivity {
         }
         SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
         sendPostReqAsyncTask.execute(macAddr, attention, meditation);
+    }
+
+    OkHttpClient client = new OkHttpClient();
+    private void okhttpAsyncGet(){
+        Request request = new Request.Builder()
+                .url("https://ailan.herokuapp.com/bm/"+ getMacAddr() + "/" + attention + "/" + meditation + "/")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
     }
 
 
@@ -324,12 +349,12 @@ public class start extends AppCompatActivity {
                                 progressBarM = (ProgressBar) findViewById(R.id.progressBarM);
                                 progressBarA.setProgress(attention);//專注
                                 progressBarM.setProgress(meditation);//放鬆
+                                okhttpAsyncGet();
 
-                                InsertData(getMacAddr(), Integer.toString(attention), Integer.toString(meditation));
+//                                InsertData(getMacAddr(), Integer.toString(attention), Integer.toString(meditation));
 
                             }
                         });
-                        Log.e("TGAC", "attention and meditation: "+attention+"||||"+meditation);
                     }//Integer.toHexString(i)
                     if (needdata.size()>=31){
                         needdata = new ArrayList<Integer>();
