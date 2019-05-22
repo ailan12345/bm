@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bm">
+    package="com.bm.breathM">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -16,12 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".description"></activity>
-        <activity android:name=".record" />
-        <activity android:name=".meditation" />
-        <activity android:name=".start" />
-        <activity android:name=".breathe" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.bm.breathM.description"></activity>
+        <activity android:name="com.bm.breathM.record" />
+        <activity android:name="com.bm.breathM.meditation" />
+        <activity android:name="com.bm.breathM.start" />
+        <activity android:name="com.bm.breathM.breathe" />
+        <activity android:name="com.bm.breathM.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

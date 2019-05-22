@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="冥想時間：" />
+            android:text="呼吸時間：" />
 
         <RadioGroup
             android:id="@+id/radioGroup"

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.bm"
+        applicationId "com.bm.breathM"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
@@ -12,7 +12,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -35,4 +36,10 @@ dependencies {
 
 android{
     useLibrary 'org.apache.http.legacy'
+}
+android{
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
